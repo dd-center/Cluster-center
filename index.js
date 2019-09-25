@@ -2,6 +2,8 @@ const Server = require('socket.io')
 const LRU = require('lru-cache')
 const AtHome = require('athome')
 
+const clusterWs = require('./ws')
+
 const io = new Server(9012, { serveClient: false })
 const httpHome = new AtHome()
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 * 2 })
@@ -10,7 +12,6 @@ io.on('connect', socket => {
   console.log('vtbs.moe connected')
   socket.on('http', async (url, ack) => {
     if (typeof ack === 'function') {
-      console.log(`http: ${url}`)
       let result = cache.get(url)
       if (result) {
         console.log('cache hit')
@@ -27,3 +28,5 @@ io.on('connect', socket => {
 })
 
 console.log('Cluster center online')
+console.log('socket.io: 9012')
+clusterWs(httpHome)
