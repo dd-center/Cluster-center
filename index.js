@@ -5,7 +5,7 @@ const AtHome = require('athome')
 const clusterWs = require('./ws')
 
 const io = new Server(9012, { serveClient: false })
-const httpHome = new AtHome()
+const httpHome = new AtHome({ validator: Boolean })
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 * 2 })
 
 io.on('connect', socket => {
