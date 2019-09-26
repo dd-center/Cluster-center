@@ -19,8 +19,7 @@ console.log('ws: 9013')
 
 module.exports = httpHome => {
   wss.on('connection', (ws, request) => {
-    const { searchParams } = new URL(request.url, url)
-    const resolveTable = {}
+    const resolveTable = new Map()
     const uuid = httpHome.join(url => {
       console.log(`dispatch to ${uuid}`)
       const key = keyGen()
@@ -32,10 +31,11 @@ module.exports = httpHome => {
         }
       }))
       return new Promise(resolve => {
-        resolveTable[key] = resolve
+        resolveTable.set(key, resolve)
       })
     })
 
+    const { searchParams } = new URL(request.url, url)
     metadatas
       .map(key => [key, searchParams.get(key)])
       .filter(([_k, v]) => v)
@@ -52,9 +52,9 @@ module.exports = httpHome => {
         const json = parse(message)
         if (json) {
           const { key, data } = json
-          if (resolveTable[key]) {
-            resolveTable[key](data)
-            delete resolveTable[key]
+          if (resolveTable.has(key)) {
+            resolveTable.get(key)(data)
+            resolveTable.delete(key)
           }
         }
       }
