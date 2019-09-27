@@ -17,11 +17,11 @@ const metadatas = ['runtime', 'platform', 'version', 'name']
 
 console.log('ws: 9013')
 
-module.exports = httpHome => {
+module.exports = (httpHome, log) => {
   wss.on('connection', (ws, request) => {
     const resolveTable = new Map()
     const uuid = httpHome.join(url => {
-      console.log(`dispatch to ${uuid}`)
+      log('dispatch', { uuid })
       const key = keyGen()
       ws.send(JSON.stringify({
         key,
@@ -42,11 +42,11 @@ module.exports = httpHome => {
       // eslint-disable-next-line no-return-assign
       .forEach(([k, v]) => httpHome.homes.get(uuid)[k] = v)
 
-    console.log(`cluster connect ${uuid}`)
+    log('connect', { uuid })
 
     ws.on('message', message => {
       if (message === 'DDhttp') {
-        console.log(`pull ${uuid}`)
+        log('pull', { uuid })
         httpHome.pull(uuid)
       } else {
         const json = parse(message)
@@ -60,7 +60,7 @@ module.exports = httpHome => {
       }
     })
     ws.on('close', n => {
-      console.log(`cluster closed ${n} ${uuid}`)
+      log('close', { n, uuid })
     })
   })
 }
