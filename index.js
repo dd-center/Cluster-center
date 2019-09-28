@@ -15,6 +15,10 @@ const httpHome = new AtHome({
     if (result.code) {
       error(result)
     }
+    if (result.data === undefined) {
+      error('unknow result', result)
+      return false
+    }
     return !result.code
   }
 })
