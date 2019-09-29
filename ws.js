@@ -3,7 +3,12 @@ const WebSocket = require('ws')
 const keyGen = () => String(Math.random())
 const parse = string => {
   try {
-    const { key, data } = JSON.parse(string)
+    let { key, data } = JSON.parse(string)
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data)
+      } catch (_) {}
+    }
     return { key, data }
   } catch (_) {
     return undefined
