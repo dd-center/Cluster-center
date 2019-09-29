@@ -68,6 +68,7 @@ module.exports = (httpHome, log) => {
     })
     ws.on('close', n => {
       log('close', { n, uuid })
+      httpHome.quit(uuid)
     })
   })
 }
