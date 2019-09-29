@@ -40,6 +40,8 @@ module.exports = (httpHome, log) => {
       })
     })
 
+    console.log('online:', httpHome.homes.size)
+
     const { searchParams } = new URL(request.url, url)
     metadatas
       .map(key => [key, searchParams.get(key)])
