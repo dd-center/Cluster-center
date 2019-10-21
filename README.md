@@ -6,6 +6,8 @@ The cluster manager of Project ***DD@Home***. <!--Yes, this is inspired by Henta
 
 ### Available Clients
 
+Desktop: <https://github.com/dd-center/DDatElectron>
+
 Node: <https://github.com/dd-center/DDatHome-nodejs>
 
 Go: <https://github.com/dd-center/DDatHome-go>
