@@ -3,13 +3,16 @@ const WebSocket = require('ws')
 const keyGen = () => String(Math.random())
 const parse = string => {
   try {
-    let { key, data } = JSON.parse(string)
+    let { key, data, query } = JSON.parse(string)
     if (typeof data === 'string') {
       try {
         data = JSON.parse(data)
       } catch (_) {}
+      return { key, data }
     }
-    return { key, data }
+    if (query) {
+      return { key, query }
+    }
   } catch (_) {
     return undefined
   }
@@ -51,17 +54,43 @@ module.exports = (httpHome, log) => {
 
     log('connect', { uuid })
 
+    const router = {
+      pulls() {
+        return httpHome.pulls.length
+      },
+      pending() {
+        return httpHome.pending.length
+      },
+      homes() {
+        return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen }))
+      },
+      online() {
+        return httpHome.homes.size
+      }
+    }
+
     ws.on('message', message => {
       if (message === 'DDhttp') {
         log('pull', { uuid })
         httpHome.pull(uuid)
       } else {
-        const json = parse(message)
-        if (json) {
-          const { key, data } = json
+        const { key, data, query } = parse(message)
+        if (data) {
           if (resolveTable.has(key)) {
             resolveTable.get(key)(data)
             resolveTable.delete(key)
+          }
+        } else if (query) {
+          const route = router[query]
+          if (route) {
+            const result = route()
+            ws.send(JSON.stringify({
+              key,
+              data: {
+                type: 'query',
+                result
+              }
+            }))
           }
         }
       }
