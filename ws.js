@@ -38,8 +38,12 @@ module.exports = (httpHome, log) => {
           url
         }
       }))
-      return new Promise(resolve => {
-        resolveTable.set(key, resolve)
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(reject, 1000 * 5, 'timeout')
+        resolveTable.set(key, data => {
+          clearTimeout(timeout)
+          resolve(data)
+        })
       })
     })
 
