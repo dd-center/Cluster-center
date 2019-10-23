@@ -62,7 +62,7 @@ module.exports = (httpHome, log) => {
         return httpHome.pending.length
       },
       homes() {
-        return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen }))
+        return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }))
       },
       online() {
         return httpHome.homes.size
