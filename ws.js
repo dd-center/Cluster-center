@@ -74,23 +74,26 @@ module.exports = (httpHome, log) => {
         log('pull', { uuid })
         httpHome.pull(uuid)
       } else {
-        const { key, data, query } = parse(message)
-        if (data) {
-          if (resolveTable.has(key)) {
-            resolveTable.get(key)(data)
-            resolveTable.delete(key)
-          }
-        } else if (query) {
-          const route = router[query]
-          if (route) {
-            const result = route()
-            ws.send(JSON.stringify({
-              key,
-              data: {
-                type: 'query',
-                result
-              }
-            }))
+        const json = parse(message)
+        if (typeof json === 'object') {
+          const { key, data, query } = json
+          if (data) {
+            if (resolveTable.has(key)) {
+              resolveTable.get(key)(data)
+              resolveTable.delete(key)
+            }
+          } else if (query) {
+            const route = router[query]
+            if (route) {
+              const result = route()
+              ws.send(JSON.stringify({
+                key,
+                data: {
+                  type: 'query',
+                  result
+                }
+              }))
+            }
           }
         }
       }
