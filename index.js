@@ -2,7 +2,7 @@ const Server = require('socket.io')
 const LRU = require('lru-cache')
 const AtHome = require('athome')
 
-const { log, error } = require('./state')
+const { log, error, state } = require('./state')
 
 const clusterWs = require('./ws')
 
@@ -25,6 +25,21 @@ const httpHome = new AtHome({
   }
 })
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 * 4 })
+
+state({
+  pulls() {
+    return httpHome.pulls.length
+  },
+  pending() {
+    return httpHome.pending.length
+  },
+  homes() {
+    return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }))
+  },
+  online() {
+    return httpHome.homes.size
+  }
+})
 
 io.on('connect', socket => {
   log('vtbs.moe connected')
