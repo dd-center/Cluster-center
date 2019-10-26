@@ -39,7 +39,7 @@ module.exports = (httpHome, log) => {
         }
       }))
       return new Promise((resolve, reject) => {
-        const timeout = setTimeout(reject, 1000 * 5, 'timeout')
+        const timeout = setTimeout(reject, 1000 * 15, 'timeout')
         resolveTable.set(key, data => {
           clearTimeout(timeout)
           resolve(data)

@@ -8,6 +8,7 @@ const clusterWs = require('./ws')
 
 const io = new Server(9012, { serveClient: false })
 const httpHome = new AtHome({
+  retries: 16,
   validator: result => {
     if (!result) {
       return false
