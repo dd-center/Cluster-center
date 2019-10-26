@@ -6,8 +6,6 @@ const { log, error, state } = require('./state')
 
 const clusterWs = require('./ws')
 
-const pending = new Map()
-
 const io = new Server(9012, { serveClient: false })
 const httpHome = new AtHome({
   validator: result => {
@@ -43,34 +41,25 @@ state({
 
 io.on('connect', socket => {
   log('vtbs.moe connected')
-  socket.on('http', (url, ack) => {
+  socket.on('http', async (url, ack) => {
     if (typeof ack === 'function') {
-      const time = Date.now()
-      if (cache.has(url)) {
-        ack(cache.get(url))
+      let result = cache.get(url)
+      if (result) {
         log('cached', { url })
-      } else if (pending.has(url)) {
-        pending.get(url).then(result => {
-          if (result) {
-            log('complete', { url, time: Date.now() - time })
-            ack(result)
-          }
-        })
       } else {
         log('executing', { url })
-        pending.set(url, httpHome.execute(url).catch(e => {
+        const time = Date.now()
+        result = await httpHome.execute(url).catch(e => {
           error(e.message || e)
           console.error(e.message || e)
           return undefined
-        }))
-        pending.get(url).then(result => {
-          if (result) {
-            log('complete', { url, time: Date.now() - time })
-            cache.set(url, result)
-            ack(result)
-          }
         })
+        if (result) {
+          log('complete', { url, time: Date.now() - time })
+          cache.set(url, result)
+        }
       }
+      ack(result)
     }
   })
 })
