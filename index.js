@@ -40,6 +40,8 @@ state({
   }
 })
 
+const pending = new Map()
+
 io.on('connect', socket => {
   log('vtbs.moe connected')
   socket.on('http', async (url, ack) => {
@@ -47,14 +49,19 @@ io.on('connect', socket => {
       let result = cache.get(url)
       if (result) {
         log('cached', { url })
+      } else if (pending.has(url)) {
+        result = await pending.get(url)
       } else {
         log('executing', { url })
         const time = Date.now()
-        result = await httpHome.execute(url).catch(e => {
+        const job = httpHome.execute(url).catch(e => {
           error(e.message || e)
           console.error(e.message || e)
           return undefined
         })
+        pending.set(url, job)
+        result = await job
+        pending.delete(url)
         if (result) {
           log('complete', { url, time: Date.now() - time })
           cache.set(url, result)
