@@ -23,7 +23,7 @@ const httpHome = new AtHome({
     return !result.code
   }
 })
-const cache = new LRU({ max: 10000, maxAge: 1000 * 60 * 4 })
+const cache = new LRU({ max: 10000, maxAge: 1000 * 60 })
 
 state({
   pulls() {
