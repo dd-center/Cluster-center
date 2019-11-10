@@ -74,7 +74,14 @@ module.exports = (httpHome, log) => {
     }
 
     ws.on('message', message => {
-      if (message === 'DDhttp') {
+      if (message === 'DDDhttp') {
+        if (httpHome.pending.length) {
+          log('pull', { uuid })
+          httpHome.pull(uuid)
+        } else {
+          ws.send('wait')
+        }
+      } else if (message === 'DDhttp') {
         log('pull', { uuid })
         httpHome.pull(uuid)
       } else {
