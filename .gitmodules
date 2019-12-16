@@ -1,0 +1,3 @@
+[submodule "state-center"]
+	path = state-center
+	url = https://github.com/dd-center/state-center.git

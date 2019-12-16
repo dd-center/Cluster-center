@@ -2,9 +2,11 @@ const Server = require('socket.io')
 const LRU = require('lru-cache')
 const AtHome = require('athome')
 
-const { log, error, state } = require('./state')
+const CState = require('./state-center/api')
 
 const clusterWs = require('./ws')
+
+const cState = new CState({ name: 'cluster' })
 
 const io = new Server(9012, { serveClient: false })
 const httpHome = new AtHome({
@@ -14,10 +16,10 @@ const httpHome = new AtHome({
       return false
     }
     if (result.code) {
-      error(result)
+      cState.log('error with code', { result })
     }
     if (result.data === undefined) {
-      error('unknow result', result)
+      cState.log('error unknow result', { result })
       return false
     }
     return !result.code
@@ -25,7 +27,7 @@ const httpHome = new AtHome({
 })
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 })
 
-state({
+cState.stateRoute({
   pulls() {
     return httpHome.pulls.length
   },
@@ -43,19 +45,19 @@ state({
 const pending = new Map()
 
 io.on('connect', socket => {
-  log('vtbs.moe connected')
+  cState.log('vtbs.moe connected')
   socket.on('http', async (url, ack) => {
     if (typeof ack === 'function') {
       let result = cache.get(url)
       if (result) {
-        log('cached', { url })
+        cState.log('cached', { url })
       } else if (pending.has(url)) {
         result = await pending.get(url)
       } else {
-        log('executing', { url })
+        cState.log('executing', { url })
         const time = Date.now()
         const job = httpHome.execute(url).catch(e => {
-          error(e.message || e)
+          cState.log('error', { msg: e.message || e })
           console.error(e.message || e)
           return undefined
         })
@@ -63,7 +65,7 @@ io.on('connect', socket => {
         result = await job
         pending.delete(url)
         if (result) {
-          log('complete', { url, time: Date.now() - time })
+          cState.log('complete', { url, time: Date.now() - time })
           cache.set(url, result)
         }
       }
@@ -74,4 +76,4 @@ io.on('connect', socket => {
 
 console.log('Cluster center online')
 console.log('socket.io: 9012')
-clusterWs(httpHome, log)
+clusterWs(httpHome, cState.log)
