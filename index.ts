@@ -1,14 +1,12 @@
-const Server = require('socket.io')
-const LRU = require('lru-cache')
-const AtHome = require('athome')
-
-const CState = require('./state-center/api')
-
-const clusterWs = require('./ws')
+import SocketIO from 'socket.io'
+import LRU from 'lru-cache'
+import AtHome from 'athome'
+import CState from 'state-center/api'
+import clusterWs from './ws'
 
 const cState = new CState({ name: 'cluster' })
 
-const io = new Server(9012, { serveClient: false })
+const io = SocketIO(9012, { serveClient: false })
 const httpHome = new AtHome({
   retries: 16,
   validator: result => {
@@ -23,7 +21,7 @@ const httpHome = new AtHome({
       return false
     }
     return !result.code
-  }
+  },
 })
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 })
 
@@ -35,11 +33,12 @@ cState.stateRoute({
     return httpHome.pending.length
   },
   homes() {
+    // @ts-ignore
     return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }))
   },
   online() {
     return httpHome.homes.size
-  }
+  },
 })
 
 const pending = new Map()

@@ -1,4 +1,5 @@
-const WebSocket = require('ws')
+import { Server } from 'ws'
+import AtHome from 'athome'
 
 const keyGen = () => String(Math.random())
 const parse = string => {
@@ -18,25 +19,25 @@ const parse = string => {
   }
 }
 
-const wss = new WebSocket.Server({ port: 9013 })
+const wss = new Server({ port: 9013 })
 
 const url = new URL('https://cluster.vtbs.moe')
 const metadatas = ['runtime', 'platform', 'version', 'name']
 
 console.log('ws: 9013')
 
-module.exports = (httpHome, log) => {
+export default (httpHome: InstanceType<typeof AtHome>, log) => {
   wss.on('connection', (ws, request) => {
-    const resolveTable = new Map()
-    const uuid = httpHome.join(url => {
+    const resolveTable = new Map<string, (data: any) => void>()
+    const uuid = httpHome.join((url: string) => {
       log('dispatch', { uuid })
       const key = keyGen()
       ws.send(JSON.stringify({
         key,
         data: {
           type: 'http',
-          url
-        }
+          url,
+        },
       }))
       return new Promise((resolve, reject) => {
         const timeout = setTimeout(reject, 1000 * 15, 'timeout')
@@ -66,11 +67,12 @@ module.exports = (httpHome, log) => {
         return httpHome.pending.length
       },
       homes() {
+        // @ts-ignore
         return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }))
       },
       online() {
         return httpHome.homes.size
-      }
+      },
     }
 
     ws.on('message', message => {
@@ -101,8 +103,8 @@ module.exports = (httpHome, log) => {
                 key,
                 data: {
                   type: 'query',
-                  result
-                }
+                  result,
+                },
               }))
             }
           }
