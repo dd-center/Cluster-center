@@ -1,5 +1,6 @@
 {
   "name": "cluster-center",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "test": "npm run unit",
