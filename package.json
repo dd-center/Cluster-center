@@ -1,4 +1,6 @@
 {
+  "name": "cluster-center",
+  "private": true,
   "scripts": {
     "test": "npm run unit",
     "unit": "nyc mocha --reporter=landing",
