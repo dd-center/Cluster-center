@@ -6,8 +6,14 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
   },
+  "include": [
+    "./state-center"
+  ],
   "files": [
     "./index.ts",
     "./ws.ts"
+  ],
+  "exclude": [
+    "./state-center/test"
   ]
 }

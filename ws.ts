@@ -1,14 +1,15 @@
 import { Server } from 'ws'
 import AtHome from 'athome'
+import CState from './state-center/api'
 
 const keyGen = () => String(Math.random())
-const parse = string => {
+const parse = (string: string) => {
   try {
     let { key, data, query } = JSON.parse(string)
     if (typeof data === 'string') {
       try {
         data = JSON.parse(data)
-      } catch (_) {}
+      } catch (_) { }
       return { key, data }
     }
     if (query) {
@@ -26,7 +27,7 @@ const metadatas = ['runtime', 'platform', 'version', 'name']
 
 console.log('ws: 9013')
 
-export default (httpHome: InstanceType<typeof AtHome>, log) => {
+export default (httpHome: InstanceType<typeof AtHome>, log: CState['log']) => {
   wss.on('connection', (ws, request) => {
     const resolveTable = new Map<string, (data: any) => void>()
     const uuid = httpHome.join((url: string) => {
@@ -54,7 +55,7 @@ export default (httpHome: InstanceType<typeof AtHome>, log) => {
     metadatas
       .map(key => [key, searchParams.get(key)])
       .filter(([_k, v]) => v)
-      // eslint-disable-next-line no-return-assign
+      // @ts-ignore
       .forEach(([k, v]) => httpHome.homes.get(uuid)[k] = v)
 
     log('connect', { uuid })
@@ -75,7 +76,7 @@ export default (httpHome: InstanceType<typeof AtHome>, log) => {
       },
     }
 
-    ws.on('message', message => {
+    ws.on('message', (message: string) => {
       if (message === 'DDDhttp') {
         if (httpHome.pending.length) {
           log('pull', { uuid })
@@ -96,7 +97,7 @@ export default (httpHome: InstanceType<typeof AtHome>, log) => {
               resolveTable.delete(key)
             }
           } else if (query) {
-            const route = router[query]
+            const route = router[query as keyof typeof router]
             if (route) {
               const result = route()
               ws.send(JSON.stringify({
