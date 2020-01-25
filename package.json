@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "npm run unit",
-    "unit": "nyc mocha --reporter=landing",
-    "coverage": "mkdir coverage; nyc report --reporter=text-lcov >> ./coverage/lcov.info"
+    "build": "tsc -b"
   },
   "devDependencies": {
     "@types/lru-cache": "^5.1.0",
