@@ -1,7 +1,7 @@
 import SocketIO from 'socket.io'
 import LRU from 'lru-cache'
 import AtHome from 'athome'
-import CState from 'state-center/api'
+import CState from './state-center/api'
 import clusterWs from './ws'
 
 const cState = new CState({ name: 'cluster' })
