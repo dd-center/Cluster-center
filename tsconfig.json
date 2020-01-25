@@ -7,11 +7,11 @@
     "noImplicitAny": true,
   },
   "include": [
-    "./state-center"
+    "state-center",
+    "src"
   ],
   "files": [
-    "./index.ts",
-    "./ws.ts"
+    "index.ts",
   ],
   "exclude": [
     "./state-center/test"

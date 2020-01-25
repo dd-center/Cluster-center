@@ -1,6 +1,6 @@
 import { Server } from 'ws'
 import AtHome from 'athome'
-import CState from './state-center/api'
+import CState from '../state-center/api'
 
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
