@@ -1,6 +1,7 @@
 import { Server } from 'ws'
 import AtHome from 'athome'
 import CState from '../state-center/api'
+import { map, metadatas } from './metadata'
 
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
@@ -23,7 +24,6 @@ const parse = (string: string) => {
 const wss = new Server({ port: 9013 })
 
 const url = new URL('https://cluster.vtbs.moe')
-const metadatas = ['runtime', 'platform', 'version', 'name']
 
 console.log('ws: 9013')
 
@@ -53,10 +53,9 @@ export default (httpHome: InstanceType<typeof AtHome>, log: CState['log']) => {
 
     const { searchParams } = new URL(request.url, url)
     metadatas
+    map.set(httpHome.homes.get(uuid), Object.fromEntries(metadatas
       .map(key => [key, searchParams.get(key)])
-      .filter(([_k, v]) => v)
-      // @ts-ignore
-      .forEach(([k, v]) => httpHome.homes.get(uuid)[k] = v)
+      .filter(([_, v]) => v)))
 
     log('connect', { uuid })
 
@@ -68,8 +67,12 @@ export default (httpHome: InstanceType<typeof AtHome>, log: CState['log']) => {
         return httpHome.pending.length
       },
       homes() {
-        // @ts-ignore
-        return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }))
+        return [...httpHome.homes.values()]
+          .map(home => {
+            const { resolves, rejects, lastSeen, id } = home
+            const metadata = map.get(home)
+            return { resolves, rejects, lastSeen, id, ...metadata }
+          })
       },
       online() {
         return httpHome.homes.size

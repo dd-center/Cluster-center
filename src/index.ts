@@ -3,6 +3,7 @@ import LRU from 'lru-cache'
 import AtHome from 'athome'
 import CState from '../state-center/api'
 import clusterWs from './ws'
+import { map } from './metadata'
 
 const cState = new CState({ name: 'cluster' })
 
@@ -33,8 +34,12 @@ cState.stateRoute({
     return httpHome.pending.length
   },
   homes() {
-    // @ts-ignore
-    return [...httpHome.homes.values()].map(({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }) => ({ runtime, version, platform, docker, name, resolves, rejects, lastSeen, id }))
+    return [...httpHome.homes.values()]
+      .map(home => {
+        const { resolves, rejects, lastSeen, id } = home
+        const metadata = map.get(home)
+        return { resolves, rejects, lastSeen, id, ...metadata }
+      })
   },
   online() {
     return httpHome.homes.size
