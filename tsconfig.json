@@ -5,15 +5,15 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "composite": true
   },
   "include": [
-    "state-center",
     "src"
   ],
   "files": [
     "index.ts",
   ],
-  "exclude": [
-    "./state-center/test"
+  "references": [
+    { "path": "state-center" }
   ]
 }

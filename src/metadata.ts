@@ -4,4 +4,4 @@ export const metadatas = ['runtime', 'platform', 'version', 'name', 'docker'] as
 
 type MetadataKey = typeof metadatas[number]
 
-export const map = new WeakMap<ReturnType<InstanceType<typeof AtHome>["homes"]["get"]>, Record<MetadataKey, any>>()
+export const map: WeakMap<ReturnType<InstanceType<typeof AtHome>["homes"]["get"]>, Record<MetadataKey, any>> = new WeakMap()

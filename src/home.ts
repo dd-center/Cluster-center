@@ -8,7 +8,7 @@ export const cState = new CState({ name: 'cluster' })
 
 const io = SocketIO(9012, { serveClient: false })
 
-export const httpHome = new AtHome({
+export const httpHome: InstanceType<typeof AtHome> = new AtHome({
   retries: 16,
   validator: result => {
     if (!result) {
@@ -37,7 +37,8 @@ export const router = {
   homes() {
     return [...httpHome.homes.values()]
       .map(home => {
-        const { resolves, rejects, lastSeen, id } = home
+        const { resolves, rejects, lastSeen } = home
+        const { id }: any = home
         const metadata = map.get(home)
         return { resolves, rejects, lastSeen, id, ...metadata }
       })
