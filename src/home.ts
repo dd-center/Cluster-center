@@ -27,7 +27,7 @@ export const httpHome = new AtHome({
 
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 })
 
-cState.stateRoute({
+export const router = {
   pulls() {
     return httpHome.pulls.length
   },
@@ -45,7 +45,9 @@ cState.stateRoute({
   online() {
     return httpHome.homes.size
   },
-})
+}
+
+cState.stateRoute(router)
 
 const pending = new Map()
 

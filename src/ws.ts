@@ -2,7 +2,7 @@ import { Server } from 'ws'
 import AtHome from 'athome'
 import CState from '../state-center/api'
 import { map, metadatas } from './metadata'
-import { httpHome, cState } from './home'
+import { httpHome, cState, router } from './home'
 
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
@@ -60,26 +60,6 @@ wss.on('connection', (ws, request) => {
     .filter(([_, v]) => v)))
 
   log('connect', { uuid })
-
-  const router = {
-    pulls() {
-      return httpHome.pulls.length
-    },
-    pending() {
-      return httpHome.pending.length
-    },
-    homes() {
-      return [...httpHome.homes.values()]
-        .map(home => {
-          const { resolves, rejects, lastSeen, id } = home
-          const metadata = map.get(home)
-          return { resolves, rejects, lastSeen, id, ...metadata }
-        })
-    },
-    online() {
-      return httpHome.homes.size
-    },
-  }
 
   ws.on('message', (message: string) => {
     if (message === 'DDDhttp') {
