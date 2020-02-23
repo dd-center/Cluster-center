@@ -6,11 +6,6 @@
     "build": "tsc -b"
   },
   "devDependencies": {
-    "@types/lru-cache": "^5.1.0",
-    "@types/node": "^13.1.8",
-    "@types/socket.io": "^2.1.4",
-    "@types/socket.io-client": "^1.4.32",
-    "@types/ws": "^7.2.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.6",
     "mocha": "^6.2.0",
@@ -19,6 +14,11 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "@types/lru-cache": "^5.1.0",
+    "@types/node": "^13.1.8",
+    "@types/socket.io": "^2.1.4",
+    "@types/socket.io-client": "^1.4.32",
+    "@types/ws": "^7.2.0",
     "athome": "^0.3.0",
     "lru-cache": "^5.1.1",
     "socket.io": "^2.3.0",
