@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "composite": true
+  },
+  "include": [
+    "src"
+  ],
+  "files": [
+    "index.ts",
+  ],
+  "references": [
+    { "path": "state-center" }
+  ]
+}
