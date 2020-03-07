@@ -1,7 +1,7 @@
 import WebSocket, { Server } from 'ws'
 import AtHome from 'athome'
 import CState from '../state-center/api'
-import { map, metadatas } from './metadata'
+import { map, metadatas, ddCount } from './metadata'
 import { httpHome, cState, router } from './home'
 
 const keyGen = () => String(Math.random())
@@ -88,6 +88,7 @@ wss.on('connection', (ws, request) => {
 
   ws.on('message', (message: string) => {
     if (message === 'DDDhttp') {
+      ddCount()
       if (httpHome.pending.length) {
         log('pull', { uuid })
         httpHome.pull(uuid)
@@ -95,6 +96,7 @@ wss.on('connection', (ws, request) => {
         ws.send('wait')
       }
     } else if (message === 'DDhttp') {
+      ddCount()
       log('pull', { uuid })
       httpHome.pull(uuid)
     } else {

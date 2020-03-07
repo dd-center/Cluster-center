@@ -2,7 +2,7 @@ import SocketIO from 'socket.io'
 import LRU from 'lru-cache'
 import AtHome from 'athome'
 import CState from '../state-center/api'
-import { map } from './metadata'
+import { map, getDDCount } from './metadata'
 
 export const cState = new CState({ name: 'cluster' })
 
@@ -46,6 +46,9 @@ export const router = {
   online() {
     return httpHome.homes.size
   },
+  power() {
+    return getDDCount()
+  }
 }
 
 cState.stateRoute(router)
