@@ -8,7 +8,7 @@ export const cState = new CState({ name: 'cluster' })
 
 const io = SocketIO(9012, { serveClient: false })
 
-export const httpHome: InstanceType<typeof AtHome> = new AtHome({
+export const httpHome = new AtHome<string, { code: number, data: any }>({
   retries: 16,
   validator: result => {
     if (!result) {

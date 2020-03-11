@@ -19,7 +19,7 @@
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-client": "^1.4.32",
     "@types/ws": "^7.2.0",
-    "athome": "^0.3.0",
+    "athome": "^0.4.1",
     "lru-cache": "^5.1.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",

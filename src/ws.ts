@@ -1,7 +1,7 @@
 import WebSocket, { Server } from 'ws'
 import AtHome from 'athome'
 import CState from '../state-center/api'
-import { map, metadatas, ddCount } from './metadata'
+import { map, metadatas, ddCount, Balancer } from './metadata'
 import { httpHome, cState, router } from './home'
 
 const keyGen = () => String(Math.random())
@@ -43,7 +43,7 @@ const danmakuWaitMap = new WeakMap<any, number>()
 
 wss.on('connection', (ws, request) => {
   const resolveTable = new Map<string, (data: any) => void>()
-  const uuid = httpHome.join((url: string) => {
+  const uuid = httpHome.join(url => {
     log('dispatch', { uuid })
     const key = keyGen()
     ws.send(JSON.stringify({
@@ -63,6 +63,7 @@ wss.on('connection', (ws, request) => {
   })
 
   console.log('online:', httpHome.homes.size)
+  const balancer = new Balancer()
 
   const { searchParams } = new URL(request.url, url)
   metadatas
@@ -88,12 +89,21 @@ wss.on('connection', (ws, request) => {
 
   ws.on('message', (message: string) => {
     if (message === 'DDDhttp') {
-      ddCount()
-      if (httpHome.pending.length) {
-        log('pull', { uuid })
-        httpHome.pull(uuid)
-      } else {
-        ws.send('wait')
+      if (!balancer.drop) {
+        ddCount()
+        if (httpHome.pending.length) {
+          log('pull', { uuid })
+          httpHome.pull(uuid)
+            .then(w => {
+              if (w) {
+                balancer.resolve()
+              } else {
+                balancer.reject()
+              }
+            })
+        } else {
+          ws.send('wait')
+        }
       }
     } else if (message === 'DDhttp') {
       ddCount()
