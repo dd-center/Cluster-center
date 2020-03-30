@@ -8,6 +8,15 @@ export const cState = new CState({ name: 'cluster' })
 
 const io = SocketIO(9012, { serveClient: false })
 
+const danmakuHistory: [string, string][] = []
+
+cState.subscribe('cluster').on('danmaku', (name, text) => {
+  danmakuHistory.push([name, text])
+  if (danmakuHistory.length > 50) {
+    danmakuHistory.shift()
+  }
+})
+
 export const httpHome = new AtHome<string, { code: number, data: any }>({
   retries: 16,
   validator: result => {
@@ -45,6 +54,9 @@ export const router = {
   },
   online() {
     return httpHome.homes.size
+  },
+  danmakuHistory() {
+    return danmakuHistory
   },
   power() {
     return getDDCount()
