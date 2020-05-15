@@ -3,6 +3,7 @@ import AtHome from 'athome'
 import CState from '../state-center/api'
 import { map, metadatas, ddCount, Balancer } from './metadata'
 import { httpHome, cState, router } from './home'
+import { insertDanmaku } from './db'
 
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
@@ -79,7 +80,9 @@ wss.on('connection', (ws, request) => {
     if (now - danmakuWaitMap.get(ws) > 1000) {
       const text = String(danmaku)
       if (text.length < 140) {
-        danmakuPublish(map.get(httpHome.homes.get(uuid)).name || 'DD', text)
+        const name = map.get(httpHome.homes.get(uuid)).name || 'DD'
+        danmakuPublish(name, text)
+        insertDanmaku(name, text, Date.now())
       }
       danmakuWaitMap.set(ws, now)
     }
