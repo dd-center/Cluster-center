@@ -3,6 +3,7 @@ tsconfig.tsbuildinfo
 src/*.js
 index.js
 package-lock.json
+db
 
 # Logs
 logs
