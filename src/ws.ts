@@ -3,7 +3,7 @@ import AtHome from 'athome'
 import CState from '../state-center/api'
 import { map, metadatas, ddCount, Balancer } from './metadata'
 import { httpHome, cState, router } from './home'
-import { insertDanmaku } from './db'
+import { insertDanmaku, statusRecorder } from './db'
 
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
@@ -72,6 +72,8 @@ wss.on('connection', (ws, request) => {
     .map(key => [key, searchParams.get(key)])
     .filter(([_, v]) => v)))
 
+  const recorder = statusRecorder(map.get(httpHome.homes.get(uuid)).uuid)
+
   const sendDanmaku = (danmaku: string) => {
     const now = Date.now()
     if (!danmakuWaitMap.has(ws)) {
@@ -100,8 +102,10 @@ wss.on('connection', (ws, request) => {
             .then(w => {
               if (w) {
                 balancer.resolve()
+                recorder.success()
               } else {
                 balancer.reject()
+                recorder.fail()
               }
             })
         } else {

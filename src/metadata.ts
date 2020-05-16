@@ -1,6 +1,6 @@
 import AtHome from 'athome'
 
-export const metadatas = ['runtime', 'platform', 'version', 'name', 'docker'] as const
+export const metadatas = ['runtime', 'platform', 'version', 'name', 'docker', 'uuid'] as const
 
 type MetadataKey = typeof metadatas[number]
 
