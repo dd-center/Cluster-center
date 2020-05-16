@@ -4,7 +4,7 @@ export const metadatas = ['runtime', 'platform', 'version', 'name', 'docker', 'u
 
 type MetadataKey = typeof metadatas[number]
 
-export const map: WeakMap<ReturnType<InstanceType<typeof AtHome>["homes"]["get"]>, Record<MetadataKey, any>> = new WeakMap()
+export const map: WeakMap<ReturnType<InstanceType<typeof AtHome>['homes']['get']>, Record<MetadataKey, any>> = new WeakMap()
 
 let minuteDD = 0
 
@@ -26,12 +26,14 @@ export class Balancer {
       this.#resolve--
     }, 1000 * 60 * 30)
   }
+
   reject = () => {
     this.#reject++
     setTimeout(() => {
       this.#reject--
     }, 1000 * 60 * 30)
   }
+
   get drop() {
     const ratio = this.#resolve / this.#reject
     if (ratio < 1) {

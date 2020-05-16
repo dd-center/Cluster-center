@@ -28,3 +28,6 @@ export const statusRecorder = (uuid: string | undefined) => {
   const fail = () => increase(`fail_${uuid}`, record)
   return { success, fail }
 }
+
+export const getSuccess = (uuid: string) => record.get(`success_${uuid}`).catch(() => 0)
+export const getFail = (uuid: string) => record.get(`fail_${uuid}`).catch(() => 0)

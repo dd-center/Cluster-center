@@ -4,6 +4,7 @@ import CState from '../state-center/api'
 import { map, metadatas, ddCount, Balancer } from './metadata'
 import { httpHome, cState, router } from './home'
 import { insertDanmaku, statusRecorder } from './db'
+import { run } from './graphql'
 
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
@@ -92,7 +93,7 @@ wss.on('connection', (ws, request) => {
 
   log('connect', { uuid })
 
-  ws.on('message', (message: string) => {
+  ws.on('message', async (message: string) => {
     if (message === 'DDDhttp') {
       if (!balancer.drop) {
         ddCount()
@@ -140,13 +141,15 @@ wss.on('connection', (ws, request) => {
         } else if (query) {
           if (query.type === 'danmaku') {
             sendDanmaku(query.data)
+          } else if (query.type === 'GraphQL') {
+            ws.send(JSON.stringify({
+              key,
+              data: {
+                type: 'query',
+                result: await run(query.document)
+              }
+            }))
           }
-          ws.send(JSON.stringify({
-            key,
-            data: {
-              type: 'query'
-            }
-          }))
         }
       }
     }

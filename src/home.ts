@@ -31,7 +31,7 @@ export const httpHome = new AtHome<string, { code: number, data: any }>({
       return false
     }
     return !result.code
-  },
+  }
 })
 
 const cache = new LRU({ max: 10000, maxAge: 1000 * 60 })
