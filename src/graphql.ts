@@ -70,7 +70,7 @@ const resolvers = {
 
   Node: {
     success: ({ uuid, resolves }: { uuid: string, resolves: number }) => uuid ? getSuccess(uuid) : resolves,
-    fail: ({ uuid, reject }: { uuid: string, reject: number }) => uuid ? getFail(uuid) : reject
+    fail: ({ uuid, rejects }: { uuid: string, rejects: number }) => uuid ? getFail(uuid) : rejects
   }
 }
 
@@ -80,6 +80,7 @@ export const run = async (document: any, variableValues: any) => {
   const { data, errors } = await execute({ schema, document, variableValues })
   if (errors) {
     console.error(errors)
+  } else {
+    return data
   }
-  return data
 }
