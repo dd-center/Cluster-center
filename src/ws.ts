@@ -141,6 +141,7 @@ wss.on('connection', (ws, request) => {
         } else if (query) {
           if (query.type === 'danmaku') {
             sendDanmaku(query.data)
+            ws.send(JSON.stringify({ key }))
           } else if (query.type === 'GraphQL') {
             const { document, variableValues } = query
             ws.send(JSON.stringify({
