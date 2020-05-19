@@ -4,7 +4,9 @@ import { makeExecutableSchema } from 'graphql-tools'
 
 import { getDDCount, map } from './metadata'
 import { httpHome } from './home'
-import { getSuccess, getFail } from './db'
+import { getSuccess, getFail, getDanmakuLength, getDanmaku } from './db'
+
+type Danmaku = Parameters<Parameters<ReturnType<typeof getDanmaku>['then']>[0]>[0]
 
 const typeDefs = gql`
   type Query {
@@ -12,6 +14,18 @@ const typeDefs = gql`
     pending: Int!
     DD: Int!
     homes: [Node!]!
+    danmaku: DanmakuList!
+  }
+
+  type DanmakuList {
+    length: Int!
+    danmaku(number: Int = 1, skip: Int = 0): [Danmaku!]!
+  }
+
+  type Danmaku {
+    name: String!
+    text: String!
+    timestamp: Int!
   }
 
   type Node {
@@ -36,7 +50,22 @@ const resolvers = {
       const { id } = home
       const metadata = map.get(home)
       return { id, resolves, rejects, ...metadata }
-    })
+    }),
+    danmaku: () => ({})
+  },
+
+  DanmakuList: {
+    length: () => getDanmakuLength(),
+    danmaku: (_: any, { number, skip }: { number: number, skip: number }) => Array(number)
+      .fill(skip)
+      .map((skip, i) => i + skip)
+      .map(getDanmaku)
+  },
+
+  Danmaku: {
+    name: ([name]: Danmaku) => name,
+    text: ([_, text]: Danmaku) => text,
+    timestamp: ([_, __, timestamp]: Danmaku) => timestamp
   },
 
   Node: {
@@ -47,7 +76,10 @@ const resolvers = {
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
-export const run = async (document: any) => {
-  const { data } = await execute({ schema, document })
+export const run = async (document: any, variableValues: any) => {
+  const { data, errors } = await execute({ schema, document, variableValues })
+  if (errors) {
+    console.error(errors)
+  }
   return data
 }
