@@ -52,8 +52,8 @@ wss.on('connection', (ws, request) => {
       key,
       data: {
         type: 'http',
-        url,
-      },
+        url
+      }
     }))
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(reject, 1000 * 15, 'timeout')
@@ -68,7 +68,7 @@ wss.on('connection', (ws, request) => {
   const balancer = new Balancer()
 
   const { searchParams } = new URL(request.url, url)
-  metadatas
+
   map.set(httpHome.homes.get(uuid), Object.fromEntries(metadatas
     .map(key => [key, searchParams.get(key)])
     .filter(([_, v]) => v)))
@@ -110,7 +110,14 @@ wss.on('connection', (ws, request) => {
               }
             })
         } else {
-          ws.send('wait')
+          ws.send(JSON.stringify({
+            key: '',
+            data: {
+              type: 'wait',
+              url: null
+            },
+            empty: true
+          }))
         }
       }
     } else if (message === 'DDhttp') {
@@ -134,8 +141,8 @@ wss.on('connection', (ws, request) => {
               key,
               data: {
                 type: 'query',
-                result,
-              },
+                result
+              }
             }))
           }
         } else if (query) {
@@ -166,4 +173,3 @@ wss.on('connection', (ws, request) => {
     httpHome.quit(uuid)
   })
 })
-
