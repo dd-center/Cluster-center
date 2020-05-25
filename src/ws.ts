@@ -82,7 +82,7 @@ wss.on('connection', (ws, request) => {
     }
     if (now - danmakuWaitMap.get(ws) > 1000) {
       const text = String(danmaku)
-      if (text.length < 140) {
+      if (text.length <= 256) {
         const name = map.get(httpHome.homes.get(uuid)).name || 'DD'
         danmakuPublish(name, text)
         insertDanmaku(name, text, Date.now())
