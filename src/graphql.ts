@@ -27,7 +27,7 @@ const typeDefs = gql`
   type Danmaku {
     name: String!
     text: String!
-    timestamp: Int!
+    timestamp: String!
   }
 
   type Node {
@@ -63,6 +63,10 @@ const resolvers = {
       .fill(skip)
       .map((skip, i) => i + skip)
       .map(getDanmaku)
+      .map(async danmakuP => {
+        const [name, text, timestamp] = await danmakuP
+        return [name, text, String(timestamp)]
+      })
   },
 
   Danmaku: {
