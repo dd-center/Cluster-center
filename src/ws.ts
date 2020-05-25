@@ -160,7 +160,7 @@ wss.on('connection', (ws, request) => {
               key,
               data: {
                 type: 'query',
-                result: await run(document, variableValues)
+                result: await run(document, variableValues, { id: uuid as string })
               }
             }))
           }

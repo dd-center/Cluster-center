@@ -6,6 +6,7 @@ import { getDDCount, map } from './metadata'
 import { httpHome } from './home'
 import { getSuccess, getFail, getDanmakuLength, getDanmaku } from './db'
 
+type GraphQLContext = { id: string }
 type Danmaku = Parameters<Parameters<ReturnType<typeof getDanmaku>['then']>[0]>[0]
 
 const typeDefs = gql`
@@ -15,6 +16,7 @@ const typeDefs = gql`
     DD: Int!
     homes: [Node!]!
     danmaku: DanmakuList!
+    id: String!
   }
 
   type DanmakuList {
@@ -51,7 +53,8 @@ const resolvers = {
       const metadata = map.get(home)
       return { id, resolves, rejects, ...metadata }
     }),
-    danmaku: () => ({})
+    danmaku: () => ({}),
+    id: (_: any, __: any, { id }: GraphQLContext) => id
   },
 
   DanmakuList: {
@@ -76,8 +79,8 @@ const resolvers = {
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
-export const run = async (document: any, variableValues: any) => {
-  const { data, errors } = await execute({ schema, document, variableValues })
+export const run = async (document: any, variableValues: any, contextValue: GraphQLContext) => {
+  const { data, errors } = await execute({ schema, document, variableValues, contextValue })
   if (errors) {
     console.error(errors)
   } else {
