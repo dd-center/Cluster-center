@@ -95,31 +95,31 @@ wss.on('connection', (ws, request) => {
 
   ws.on('message', async (message: string) => {
     if (message === 'DDDhttp') {
-      // if (!balancer.drop) {
-      ddCount()
-      if (httpHome.pending.length) {
-        log('pull', { uuid })
-        httpHome.pull(uuid)
-          .then(w => {
-            if (w) {
-              balancer.resolve()
-              recorder.success()
-            } else {
-              balancer.reject()
-              recorder.fail()
-            }
-          })
-      } else {
-        ws.send(JSON.stringify({
-          key: '',
-          data: {
-            type: 'wait',
-            url: null
-          },
-          empty: true
-        }))
+      if (!balancer.drop) {
+        ddCount()
+        if (httpHome.pending.length) {
+          log('pull', { uuid })
+          httpHome.pull(uuid)
+            .then(w => {
+              if (w) {
+                balancer.resolve()
+                recorder.success()
+              } else {
+                balancer.reject()
+                recorder.fail()
+              }
+            })
+        } else {
+          ws.send(JSON.stringify({
+            key: '',
+            data: {
+              type: 'wait',
+              url: null
+            },
+            empty: true
+          }))
+        }
       }
-      // }
     } else if (message === 'DDhttp') {
       ddCount()
       log('pull', { uuid })
