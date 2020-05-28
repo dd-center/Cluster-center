@@ -18,7 +18,7 @@ cState.subscribe('cluster').on('danmaku', (name, text) => {
 })
 
 export const httpHome = new AtHome<string, { code: number, data: any }>({
-  retries: 16,
+  retries: 24,
   validator: result => {
     if (!result) {
       return false
