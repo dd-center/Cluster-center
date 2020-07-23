@@ -25,7 +25,7 @@
     "athome": "^0.4.1",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
-    "graphql-tools": "^5.0.0",
+    "graphql-tools": "^6.0.15",
     "leveldown": "^5.6.0",
     "levelup": "^4.4.0",
     "lru-cache": "^5.1.1",
