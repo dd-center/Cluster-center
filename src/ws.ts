@@ -6,10 +6,12 @@ import { httpHome, cState, router } from './home'
 import { insertDanmaku, statusRecorder } from './db'
 import { run } from './graphql'
 
+import { pass, pickRoom } from './relay'
+
 const keyGen = () => String(Math.random())
 const parse = (string: string) => {
   try {
-    let { key, data, query } = JSON.parse(string)
+    let { key, data, query, relay } = JSON.parse(string)
     if (typeof data === 'string') {
       try {
         data = JSON.parse(data)
@@ -18,6 +20,9 @@ const parse = (string: string) => {
     }
     if (query) {
       return { key, query }
+    }
+    if (relay) {
+      return { relay }
     }
   } catch (_) {
     return undefined
@@ -127,7 +132,7 @@ wss.on('connection', (ws, request) => {
     } else {
       const json = parse(message)
       if (typeof json === 'object') {
-        const { key, data, query } = json
+        const { key, data, query, relay } = json
         if (data) {
           if (resolveTable.has(key)) {
             resolveTable.get(key)(data)
@@ -163,7 +168,17 @@ wss.on('connection', (ws, request) => {
                 result: await run(document, variableValues, { id: uuid as string })
               }
             }))
+          } else if (query.type === 'pickRoom') {
+            ws.send(JSON.stringify({
+              key,
+              data: {
+                type: 'query',
+                result: pickRoom()
+              }
+            }))
           }
+        } else if (relay) {
+          pass(relay)
         }
       }
     }
