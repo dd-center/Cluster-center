@@ -37,6 +37,10 @@ export const pickRoom = (): undefined | number => {
   }
 }
 
+export const getRooms = () => [...rooms.entries()].map(([roomid, { mid, active }]) => ({ roomid, mid, active }))
+
+export const totalActive = () => getRooms().map(({ active }) => active).reduce((a, b) => a + b, 0)
+
 socket.on('info', async (info: { roomid: number | undefined, mid: number, follower: number }[]) => {
   info
     .filter(({ roomid }) => roomid)

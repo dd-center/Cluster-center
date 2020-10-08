@@ -5,6 +5,7 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { getDDCount, map } from './metadata'
 import { httpHome } from './home'
 import { getSuccess, getFail, getDanmakuLength, getDanmaku } from './db'
+import { totalActive, getRooms } from './relay'
 
 type GraphQLContext = { id: string }
 type Danmaku = Parameters<Parameters<ReturnType<typeof getDanmaku>['then']>[0]>[0]
@@ -16,12 +17,18 @@ const typeDefs = gql`
     DD: Int!
     homes: [Node!]!
     danmaku: DanmakuList!
+    totalActive: Int!
+    rooms: RoomList!
     id: String!
   }
 
   type DanmakuList {
     length: Int!
     danmaku(number: Int = 1, skip: Int = 0): [Danmaku!]!
+  }
+
+  type RoomList {
+    length: Int!
   }
 
   type Danmaku {
@@ -54,6 +61,8 @@ const resolvers = {
       return { id, resolves, rejects, ...metadata }
     }),
     danmaku: () => ({}),
+    rooms: () => ({}),
+    totalActive: () => totalActive(),
     id: (_: any, __: any, { id }: GraphQLContext) => id
   },
 
@@ -67,6 +76,10 @@ const resolvers = {
         const [name, text, timestamp] = await danmakuP
         return [name, text, String(timestamp)]
       })
+  },
+
+  RoomList: {
+    length: () => getRooms().length
   },
 
   Danmaku: {
