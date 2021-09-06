@@ -2,9 +2,9 @@ import AtHome from 'athome'
 
 export const metadatas = ['runtime', 'platform', 'version', 'name', 'docker', 'uuid'] as const
 
-type MetadataKey = typeof metadatas[number]
+export type MetadataKey = typeof metadatas[number]
 
-export const map: WeakMap<ReturnType<InstanceType<typeof AtHome>['homes']['get']>, Record<MetadataKey, any>> = new WeakMap()
+export const map: WeakMap<ReturnType<InstanceType<typeof AtHome>['homes']['get']>, Partial<Record<MetadataKey, any>>> = new WeakMap()
 
 let minuteDD = 0
 

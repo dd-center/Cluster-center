@@ -8,7 +8,7 @@ import { run } from './graphql'
 
 import { pass, pickRoom } from './relay'
 
-const keyGen = () => String(Math.random())
+export const keyGen = () => String(Math.random())
 const parse = (string: string) => {
   try {
     let { key, data, query, relay } = JSON.parse(string)
