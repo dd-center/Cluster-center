@@ -61,7 +61,10 @@ wss.on('connection', (ws, request) => {
       }
     }))
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(reject, 1000 * 15, 'timeout')
+      const timeout = setTimeout(() => {
+        reject('timeout')
+        resolveTable.delete(key)
+      }, 1000 * 15)
       resolveTable.set(key, data => {
         clearTimeout(timeout)
         resolve(data)
