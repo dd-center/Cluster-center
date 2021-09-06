@@ -166,7 +166,11 @@ server.on('connection', socket => {
     httpHome.quit(uuid)
   })
 
+  socket.on('error', console.error)
+
 })
+
+server.on('error', console.error)
 
 server.listen(9014)
 console.log('tcp: 9014')
