@@ -16,39 +16,45 @@ Go: <https://github.com/dd-center/DDatHome-go>
 
 Websocket connection to `wss://cluster.vtbs.moe`
 
+#### DDhttp
+
+Simple protocol `DDhttp`: <https://github.com/dd-center/Cluster-center/blob/d7df47d9f2f9eec874b90a28baaf41aec32ecc6d/README.md#protocol>
+
+#### DDDhttp
+
 example:
 
 ```
 cluster.vtbs.moe                    You
        |<----------Websocket---------|
-       |<----------"DDhttp"----------|
+       |<----------"DDDhttp"---------|
        |             ...             |
        |------------[Task]---------->|
        |             ...             |
        |<---------[Complete]---------|
-       |<----------"DDhttp"----------|
+       |<----------"DDDhttp"---------|
        |             ...             |
-       |------------[Task]---------->|
+       |------------[Wait]---------->|
        |             ...             |
        |<---------[Complete]---------|
-       |<----------"DDhttp"----------|
+       |<----------"DDDhttp"---------|
        |             ...             |
        |             ...             |
 ```
 
 
 
-#### Pull task:
+##### Pull task:
 
-Send String: `DDhttp` for more http task.
+Send String: `DDDhttp` for more http task.
 
-Every new task is pulled by client using `DDhttp`, it is possible to pull mutiple tasks at the same time.
+For each `DDDhttp`:
 
-After pulling task, soon or later tasks will be distributed through WebSocket with a pack encoded in json.
+1. Task available: You will receive Task pack
+2. No task available: You will receive Wait pack
+3. Possibly ignored: More result with error, higher ignore rate. You recive nothing
 
-Only 1 task will be send per pulls.
-
-#### Task distribution:
+##### Task pack:
 
 Receive, format: `json`.
 
@@ -74,7 +80,21 @@ Example:
 }
 ```
 
-#### Completing Task:
+##### Wait pack:
+
+Receive, format: `json`.
+
+```json
+{
+  "key": "",
+  "data": {
+    "type": "wai",
+    "url": "some bilibili url"
+  }
+}
+```
+
+##### Completing Task:
 
 Send, format: `json`.
 
