@@ -88,9 +88,10 @@ Receive, format: `json`.
 {
   "key": "",
   "data": {
-    "type": "wai",
-    "url": "some bilibili url"
-  }
+    "type": "wait",
+    "url": null
+  },
+  "empty": true
 }
 ```
 
