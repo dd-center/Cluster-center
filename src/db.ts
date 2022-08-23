@@ -6,7 +6,7 @@ type LevelUp = ReturnType<typeof levelup>
 
 type Danmaku = [string, string, number]
 
-const database = levelup(leveldown('db'))
+const database = levelup(leveldown(process.env.MOCK ? 'db/cluster' : 'db'))
 
 const danmaku = sub<string, [string, string, number]>(database, 'danmaku', { valueEncoding: 'json' })
 const record = sub<string, number>(database, 'record', { valueEncoding: 'json' })
