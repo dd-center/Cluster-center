@@ -2,7 +2,6 @@ tsconfig.tsbuildinfo
 **/*.d.ts
 src/*.js
 index.js
-package-lock.json
 db
 
 # Logs

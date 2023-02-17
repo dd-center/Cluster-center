@@ -1,4 +1,4 @@
-import SocketIO from 'socket.io'
+import { Server } from 'socket.io'
 import LRU from 'lru-cache'
 import AtHome from 'athome'
 import CState from '../state-center/api'
@@ -6,7 +6,10 @@ import { map, getDDCount } from './metadata'
 
 export const cState = new CState({ name: 'cluster' })
 
-const io = SocketIO(9012, { serveClient: false })
+const io = new Server(9012, {
+  serveClient: false,
+  allowEIO3: true,
+})
 
 const danmakuHistory: [string, string][] = []
 

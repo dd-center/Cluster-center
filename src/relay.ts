@@ -1,12 +1,15 @@
 import io from 'socket.io-client'
-import Server from 'socket.io'
+import { Server } from 'socket.io'
 
 // const socket = io('https://api.vtbs.moe')
 // const dispatch = { emit: console.log }
 // ↑ Dev
 // ↓ Prod
 const socket = io('http://0.0.0.0:8001')
-const dispatch = Server(9003, { serveClient: false })
+const dispatch = new Server(9003, {
+  serveClient: false,
+  allowEIO3: true
+})
 
 const rooms = new Map<number, { mid: number, follower: number, active: number }>()
 
