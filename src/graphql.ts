@@ -4,11 +4,10 @@ import { makeExecutableSchema } from 'graphql-tools'
 
 import { getDDCount, map } from './metadata'
 import { httpHome } from './home'
-import { getSuccess, getFail, getDanmakuLength, getDanmaku } from './db'
+import { getSuccess, getFail, getDanmakuLength, getDanmaku, Danmaku } from './db'
 import { totalActive, getRooms } from './relay'
 
 type GraphQLContext = { id: string }
-type Danmaku = Parameters<Parameters<ReturnType<typeof getDanmaku>['then']>[0]>[0]
 
 const typeDefs = gql`
   type Query {
@@ -73,7 +72,7 @@ const resolvers = {
       .map((skip, i) => i + skip)
       .map(getDanmaku)
       .map(async danmakuP => {
-        const [name, text, timestamp] = await danmakuP
+        const [name, text, timestamp] = await danmakuP as Danmaku
         return [name, text, String(timestamp)]
       })
   },

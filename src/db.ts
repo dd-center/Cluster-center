@@ -1,20 +1,16 @@
-import leveldown from 'leveldown'
-import levelup from 'levelup'
-import sub from 'subleveldown'
+import { Level } from 'level'
 
-type LevelUp = ReturnType<typeof levelup>
+export type Danmaku = [string, string, number]
 
-type Danmaku = [string, string, number]
+const database = new Level(process.env.MOCK ? 'db/cluster' : 'db')
 
-const database = levelup(leveldown(process.env.MOCK ? 'db/cluster' : 'db'))
+const danmaku = database.sublevel<string, Danmaku | number>('danmaku', { valueEncoding: 'json' })
+const record = database.sublevel<string, number>('record', { valueEncoding: 'json' })
+const recordTime = database.sublevel<string, any>('recordTime', { valueEncoding: 'json' })
 
-const danmaku = sub<string, [string, string, number]>(database, 'danmaku', { valueEncoding: 'json' })
-const record = sub<string, number>(database, 'record', { valueEncoding: 'json' })
-const recordTime = sub(database, 'recordTime', { valueEncoding: 'json' })
+const getNum = (key: string, db: typeof record | typeof danmaku) => db.get(key).catch(() => 0) as Promise<number>
 
-const getNum = (key: string, db: LevelUp) => db.get(key).catch(() => 0) as Promise<number>
-
-const increase = async (key: string, db: LevelUp) => {
+const increase = async (key: string, db: typeof record | typeof danmaku) => {
   const number = await getNum(key, db)
   await db.put(key, number + 1)
   return number
