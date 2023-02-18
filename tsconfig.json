@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "es2022",
     "module": "commonjs",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "skipLibCheck": true,
     "composite": true
   },
   "include": [
