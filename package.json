@@ -6,6 +6,7 @@
     "build": "tsc -b"
   },
   "devDependencies": {
+    "@types/node": "^18.14.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.6",
     "mocha": "^7.1.0",
@@ -15,7 +16,6 @@
   },
   "dependencies": {
     "@types/lru-cache": "^5.1.0",
-    "@types/node": "^13.1.8",
     "@types/ws": "^7.2.0",
     "athome": "^0.4.1",
     "graphql": "^15.0.0",
