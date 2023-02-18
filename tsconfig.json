@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "composite": true
   },
   "include": [
