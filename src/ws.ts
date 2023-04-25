@@ -9,11 +9,26 @@ import { run } from './graphql'
 import { pass, pickRoom } from './relay'
 
 export const keyGen = () => String(Math.random())
+
+const parseBSON = (data: string) => {
+  const chunks = data.split('}{"code":')
+  if (chunks.length === 1) {
+    return data
+  }
+  return chunks.map((chunk, index) => {
+    if (index === 0) {
+      return chunk + '}'
+    }
+    return '{"code":' + chunk
+  })[1]
+}
+
 const parse = (string: string) => {
   try {
     let { key, data, query, relay } = JSON.parse(string)
     if (typeof data === 'string') {
       try {
+        data = parseBSON(data)
         data = JSON.parse(data)
       } catch (_) { }
       return { key, data }
