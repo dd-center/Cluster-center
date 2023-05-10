@@ -30,6 +30,11 @@ const parse = (string: string) => {
       try {
         data = parseBSON(data)
         data = JSON.parse(data)
+        if (!data.data && data.message === '房间已加密') {
+          data = {
+            code: 0
+          }
+        }
       } catch (_) { }
       return { key, data }
     }
