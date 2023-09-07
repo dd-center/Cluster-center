@@ -29,10 +29,6 @@ export const httpHome = new AtHome<string, { code: number, data: any }>({
     if (result.code) {
       cState.log('error with code', { result })
     }
-    if (result.data === undefined) {
-      cState.log('error unknow result', { result })
-      return false
-    }
     return !result.code
   }
 })
