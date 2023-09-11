@@ -49,7 +49,10 @@ const parse = (string: string) => {
   }
 }
 
-const wss = new Server({ port: 9013 })
+const wss = new Server({
+  port: 9013,
+  perMessageDeflate: true
+})
 
 const url = new URL('https://cluster.vtbs.moe')
 
