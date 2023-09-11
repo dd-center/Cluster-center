@@ -124,7 +124,8 @@ wss.on('connection', (ws, request) => {
 
   log('connect', { uuid })
 
-  ws.on('message', async (message: string) => {
+  ws.on('message', async (rawMessage) => {
+    const message = String(rawMessage)
     if (message === 'DDDhttp') {
       if (!balancer.drop) {
         ddCount()
