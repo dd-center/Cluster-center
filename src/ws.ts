@@ -214,4 +214,5 @@ wss.on('connection', (ws, request) => {
     log('close', { n, uuid })
     httpHome.quit(uuid)
   })
+  ws.on('error', console.error)
 })
