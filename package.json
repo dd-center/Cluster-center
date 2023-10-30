@@ -18,7 +18,7 @@
     "@types/lru-cache": "^5.1.0",
     "@types/ws": "^8.5.5",
     "athome": "^0.4.1",
-    "graphql": "^15.0.0",
+    "graphql": "^16.8.1",
     "graphql-tag": "^2.10.3",
     "graphql-tools": "^5.0.0",
     "level": "^8.0.0",
