@@ -22,7 +22,7 @@
     "graphql-tag": "^2.10.3",
     "graphql-tools": "^5.0.0",
     "level": "^8.0.0",
-    "lru-cache": "^5.1.1",
+    "lru-cache": "^10.0.3",
     "socket.io": "^4.6.0",
     "socket.io-client": "^4.6.0",
     "state-center": "file:state-center",
